@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "title": "Java Spring Boot Essentials",
+    "shortDescription": "Learn Spring Boot fundamentals and build REST APIs using Java.",
+    "description": "Comprehensive course on Spring Boot with hands-on projects.",
+    "price": 0,
+    "trainerName": "A. Trainer",
+    "thumbnailUrl": ""
+  },
+  {
+    "id": 2,
+    "title": "React for Beginners",
+    "shortDescription": "Get started with React, hooks, and building single-page applications.",
+    "description": "Covers React hooks, context, routing, and state management.",
+    "price": 499,
+    "trainerName": "B. Trainer",
+    "thumbnailUrl": ""
+  },
+  {
+    "id": 3,
+    "title": "Full-Stack Project with Spring & React",
+    "shortDescription": "Build a production-like full-stack app combining Spring Boot and React.",
+    "description": "From APIs to frontend — a complete project.",
+    "price": 999,
+    "trainerName": "C. Trainer",
+    "thumbnailUrl": ""
+  }
+]
