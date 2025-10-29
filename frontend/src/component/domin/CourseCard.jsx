@@ -20,7 +20,7 @@ export default function CourseCard({ course }) {
           <div className="text-sm text-gray-700">By {course.trainerName || 'Trainer'}</div>
           <div className="flex items-center gap-3">
             <div className="text-lg font-bold text-indigo-600">{course.price ? `₹${course.price}` : 'Free'}</div>
-            <Link to={`/course/${course.id}`} className="text-sm text-indigo-600">View</Link>
+            <Link to={`/course/${course.id}`} className="text-sm text-indigo-600 border border-indigo-600 px-2 py-1 rounded-md hover:bg-indigo-600 hover:text-white transition-colors">View</Link>
           </div>
         </div>
       </div>
