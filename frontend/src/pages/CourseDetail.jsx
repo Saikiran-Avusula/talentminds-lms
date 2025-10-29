@@ -1,6 +1,8 @@
+// src/pages/CourseDetail.jsx
 import React, { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import courses from '../mock-data/courses.json'
+import { fetchCourseById, enrollCourse } from '../services/api'
+import courses from '../mock-data/courses.json' // used as fallback/sync
 
 function ModuleList({ modules }) {
   const [openIndex, setOpenIndex] = useState(null)
@@ -38,15 +40,36 @@ function ModuleList({ modules }) {
 export default function CourseDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const course = courses.find(c => String(c.id) === String(id)) || courses[0]
+  const [loading, setLoading] = useState(false)
+  const [course, setCourse] = useState(() => courses.find(c => String(c.id) === String(id)) || courses[0])
 
-  const handleEnroll = () => {
-    // For now show a simple confirm and navigate to dashboard (later connect to backend)
-    const ok = window.confirm('Simulate enrollment? This will redirect you to dashboard (mock).')
-    if (ok) {
-      // In future: call POST /api/enroll/:id
-      navigate('/')
-      // show toast etc.
+  // Optionally fetch fresh course (mock) — safe to ignore if fetch fails
+  React.useEffect(() => {
+    let mounted = true
+    fetchCourseById(id).then(res => {
+      if (mounted && res?.data) setCourse(res.data)
+    }).catch(()=>{})
+    return () => { mounted = false }
+  }, [id])
+
+  const handleEnroll = async () => {
+    const ok = window.confirm('Do you want to enroll in this course?')
+    if (!ok) return
+    setLoading(true)
+    try {
+      const res = await enrollCourse(course.id)
+      // res.data contains enrollment or message
+      if (res?.data?.message === 'already enrolled') {
+        alert('You are already enrolled in this course.')
+      } else {
+        alert('Enrolled successfully! You can view this course in Dashboard.')
+        navigate('/dashboard')
+      }
+    } catch (err) {
+      console.error(err)
+      alert('Enrollment failed: ' + (err?.message || 'Unknown error'))
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -76,9 +99,10 @@ export default function CourseDetail() {
 
               <button
                 onClick={handleEnroll}
-                className="mt-6 w-full bg-indigo-600 text-white py-2 rounded shadow hover:bg-indigo-700"
+                disabled={loading}
+                className="mt-6 w-full bg-indigo-600 text-white py-2 rounded shadow hover:bg-indigo-700 disabled:opacity-60"
               >
-                Enroll Now
+                {loading ? 'Enrolling...' : 'Enroll Now'}
               </button>
             </div>
           </aside>
