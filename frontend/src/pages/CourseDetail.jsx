@@ -1,15 +1,18 @@
 // src/pages/CourseDetail.jsx
+
 import React, { useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { fetchCourseById, enrollCourse } from '../services/api'
-import courses from '../mock-data/courses.json' // used as fallback/sync
+import { fetchCourseById, enrollCourse, getEnrollmentForCourse } from '../services/api'
+import coursesFallback from '../mock-data/courses.json'
+import { useAuth } from '../context/AuthContext'
+import { useToast } from '../component/ui/ToastProvider'
 
 function ModuleList({ modules }) {
   const [openIndex, setOpenIndex] = useState(null)
   return (
     <div className="mt-4 space-y-3">
       {modules.map((m, idx) => (
-        <div key={m.id} className="border rounded">
+        <div key={m.id ?? idx} className="border rounded">
           <button
             onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
             className="w-full text-left p-3 flex justify-between items-center"
@@ -40,34 +43,46 @@ function ModuleList({ modules }) {
 export default function CourseDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { user } = useAuth()
+  const { showToast } = useToast()
   const [loading, setLoading] = useState(false)
-  const [course, setCourse] = useState(() => courses.find(c => String(c.id) === String(id)) || courses[0])
+  const [course, setCourse] = useState(() => coursesFallback.find(c => String(c.id) === String(id)) || coursesFallback[0])
+  const [enrollment, setEnrollment] = useState(null)
 
-  // Optionally fetch fresh course (mock) — safe to ignore if fetch fails
   React.useEffect(() => {
     let mounted = true
     fetchCourseById(id).then(res => {
       if (mounted && res?.data) setCourse(res.data)
     }).catch(()=>{})
+    getEnrollmentForCourse(id).then(res => {
+      if (mounted) setEnrollment(res.data)
+    }).catch(()=>{})
     return () => { mounted = false }
   }, [id])
 
+  const requireLogin = () => {
+    navigate('/auth/login', { state: { returnTo: `/course/${id}` } })
+  }
+
   const handleEnroll = async () => {
-    const ok = window.confirm('Do you want to enroll in this course?')
-    if (!ok) return
+    if (!user) {
+      const ok = window.confirm('You must sign in to enroll. Go to login?')
+      if (ok) return requireLogin()
+      return
+    }
+
     setLoading(true)
     try {
       const res = await enrollCourse(course.id)
-      // res.data contains enrollment or message
       if (res?.data?.message === 'already enrolled') {
-        alert('You are already enrolled in this course.')
+        showToast('You are already enrolled in this course.')
       } else {
-        alert('Enrolled successfully! You can view this course in Dashboard.')
+        showToast('Enrolled successfully! Check your Dashboard.')
         navigate('/dashboard')
       }
     } catch (err) {
       console.error(err)
-      alert('Enrollment failed: ' + (err?.message || 'Unknown error'))
+      showToast('Enrollment failed: ' + (err?.message || ''))
     } finally {
       setLoading(false)
     }
@@ -97,31 +112,21 @@ export default function CourseDetail() {
                 <div className="text-xl font-bold text-indigo-600 mt-1">{course.price ? `₹${course.price}` : 'Free'}</div>
               </div>
 
-              {/* <button
-                onClick={handleEnroll}
-                disabled={loading}
-                className="mt-6 w-full bg-indigo-600 text-white py-2 rounded shadow hover:bg-indigo-700 disabled:opacity-60"
-              >
-                {loading ? 'Enrolling...' : 'Enroll Now'}
-              </button> */}
-
-              {/* replaced with player link */}
-                <div className="mt-6">
-                  <div className="mb-3">
-                    <button
-                      onClick={handleEnroll}
-                      disabled={loading}
-                      className="w-full bg-indigo-600 text-white py-2 rounded shadow hover:bg-indigo-700 disabled:opacity-60"
-                    >
-                      {loading ? 'Enrolling...' : 'Enroll Now'}
-                    </button>
-                  </div>
-
-                  <div>
-                    <a href={`/course/${course.id}/player`} className="block text-center text-sm text-indigo-600">Open Course Player</a>
-                    {/* <Link to={`/course/${course.id}/player`} className="block text-center text-sm text-indigo-600">Open Course Player</Link> */}
-                  </div>
+              <div className="mt-6">
+                <div className="mb-3">
+                  <button
+                    onClick={handleEnroll}
+                    disabled={loading}
+                    className="w-full bg-indigo-600 text-white py-2 rounded shadow hover:bg-indigo-700 disabled:opacity-60"
+                  >
+                    {loading ? 'Enrolling...' : (enrollment ? 'Enrolled' : 'Enroll Now')}
+                  </button>
                 </div>
+
+                <div>
+                  <Link to={`/course/${course.id}/player`} className="block text-center text-sm text-indigo-600">Open Course Player</Link>
+                </div>
+              </div>
             </div>
           </aside>
         </div>

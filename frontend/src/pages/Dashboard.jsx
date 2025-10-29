@@ -1,9 +1,7 @@
-// src/pages/Dashboard.jsx
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { getMyEnrollments } from '../services/api'
 import { Link } from 'react-router-dom'
-
 
 export default function Dashboard() {
   const { user, logout } = useAuth()
@@ -54,6 +52,7 @@ export default function Dashboard() {
                       <div className="text-sm text-gray-600">Progress: {e.progressPercent ?? 0}%</div>
                       <div className="mt-3">
                         <Link to={`/course/${e.courseId}`} className="text-indigo-600 text-sm">Open course</Link>
+                        <span className="ml-3 text-indigo-600 text-sm"><Link to={`/course/${e.courseId}/player`}>Player</Link></span>
                       </div>
                     </div>
                   </div>

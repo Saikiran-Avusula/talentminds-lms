@@ -1,8 +1,6 @@
-// src/pages/auth/Login.jsx
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
-
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -10,20 +8,19 @@ export default function Login() {
   const [error, setError] = useState(null)
   const { login } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError(null)
 
-    // In a real app: call POST /api/auth/login -> { token, user }
-    // For demo: accept any credentials and generate a fake token
     try {
       const fakeToken = 'demo-token-' + Math.random().toString(36).slice(2)
       const user = { id: 1, name: 'Demo User', email }
       await login({ token: fakeToken, user })
-      navigate('/dashboard')
+      const returnTo = location.state?.returnTo || '/dashboard'
+      navigate(returnTo, { replace: true })
     } catch (err) {
-      // use the error message if available (helps debugging)
       setError(err?.message || 'Login failed')
     }
   }

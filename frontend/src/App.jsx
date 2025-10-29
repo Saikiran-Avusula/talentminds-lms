@@ -10,7 +10,6 @@ import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './component/route/ProtectedRoute'
 import { ToastProvider } from './component/ui/ToastProvider'
 
-
 export default function App() {
   return (
     <AuthProvider>
