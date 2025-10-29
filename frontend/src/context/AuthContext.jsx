@@ -12,8 +12,6 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     if (token) {
       setAuthToken(token)
-      // In a real app, call GET /api/auth/me to fetch user info.
-      // For now we simulate a logged-in user object persisted in localStorage.
       const raw = localStorage.getItem('tm_user')
       if (raw) setUser(JSON.parse(raw))
       else setUser({ id: 1, name: 'Demo User', email: 'demo@example.com', role: 'LEARNER' })

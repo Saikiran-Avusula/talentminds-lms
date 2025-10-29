@@ -1,6 +1,6 @@
 // src/pages/CourseDetail.jsx
 import React, { useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import { fetchCourseById, enrollCourse } from '../services/api'
 import courses from '../mock-data/courses.json' // used as fallback/sync
 
@@ -97,13 +97,31 @@ export default function CourseDetail() {
                 <div className="text-xl font-bold text-indigo-600 mt-1">{course.price ? `₹${course.price}` : 'Free'}</div>
               </div>
 
-              <button
+              {/* <button
                 onClick={handleEnroll}
                 disabled={loading}
                 className="mt-6 w-full bg-indigo-600 text-white py-2 rounded shadow hover:bg-indigo-700 disabled:opacity-60"
               >
                 {loading ? 'Enrolling...' : 'Enroll Now'}
-              </button>
+              </button> */}
+
+              {/* replaced with player link */}
+                <div className="mt-6">
+                  <div className="mb-3">
+                    <button
+                      onClick={handleEnroll}
+                      disabled={loading}
+                      className="w-full bg-indigo-600 text-white py-2 rounded shadow hover:bg-indigo-700 disabled:opacity-60"
+                    >
+                      {loading ? 'Enrolling...' : 'Enroll Now'}
+                    </button>
+                  </div>
+
+                  <div>
+                    <a href={`/course/${course.id}/player`} className="block text-center text-sm text-indigo-600">Open Course Player</a>
+                    {/* <Link to={`/course/${course.id}/player`} className="block text-center text-sm text-indigo-600">Open Course Player</Link> */}
+                  </div>
+                </div>
             </div>
           </aside>
         </div>

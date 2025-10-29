@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import { getMyEnrollments } from '../services/api'
 import { Link } from 'react-router-dom'
 
+
 export default function Dashboard() {
   const { user, logout } = useAuth()
   const [enrollments, setEnrollments] = useState([])

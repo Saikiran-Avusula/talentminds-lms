@@ -1,5 +1,5 @@
 // src/services/api.js
-// Combined helpers: token management + mock API for enrollments.
+// Combined helpers: token management + mock API for enrollments + progress updates.
 
 import axios from 'axios'
 import courses from '../mock-data/courses.json'
@@ -65,6 +65,7 @@ export const enrollCourse = async (courseId) => {
     title: course.title,
     enrolledAt: new Date().toISOString(),
     progressPercent: 0,
+    completedLessons: [] // will store lesson ids or indices
   }
   enrollments.push(newEnroll)
   localStorage.setItem(ENROLL_KEY, JSON.stringify(enrollments))
@@ -81,6 +82,47 @@ export const getMyEnrollments = async () => {
     return { ...e, course }
   })
   return { data: enriched }
+}
+
+// Get single enrollment for given courseId
+export const getEnrollmentForCourse = async (courseId) => {
+  await new Promise((r) => setTimeout(r, 100))
+  const raw = localStorage.getItem(ENROLL_KEY)
+  const enrollments = raw ? JSON.parse(raw) : []
+  const enrollment = enrollments.find(e => String(e.courseId) === String(courseId))
+  return { data: enrollment || null }
+}
+
+// Update progress by marking a lesson complete.
+// lessonId can be an index or id depending on your modules model.
+export const updateProgress = async (courseId, lessonIdentifier) => {
+  // simulate network latency
+  await new Promise((r) => setTimeout(r, 150))
+
+  const raw = localStorage.getItem(ENROLL_KEY)
+  const enrollments = raw ? JSON.parse(raw) : []
+  const idx = enrollments.findIndex(e => String(e.courseId) === String(courseId))
+  if (idx === -1) throw new Error('Not enrolled in course')
+
+  const enrollment = enrollments[idx]
+  enrollment.completedLessons = enrollment.completedLessons || []
+
+  // Avoid duplicates
+  if (!enrollment.completedLessons.includes(lessonIdentifier)) {
+    enrollment.completedLessons.push(lessonIdentifier)
+  }
+
+  // Compute progress percent based on course module count
+  const course = courses.find(c => String(c.id) === String(courseId)) || {}
+  const totalLessons = (course.modules && course.modules.length) || 0
+  const completedCount = enrollment.completedLessons.length
+  enrollment.progressPercent = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0
+
+  // write back
+  enrollments[idx] = enrollment
+  localStorage.setItem(ENROLL_KEY, JSON.stringify(enrollments))
+
+  return { data: enrollment }
 }
 
 // Default export so we can still use api when backend is ready
