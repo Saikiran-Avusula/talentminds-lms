@@ -412,5 +412,22 @@ export const getPublishedCourses = async () => {
   return { data: published }
 }
 
+/**
+ * Reject an application (sets status = 'REJECTED')
+ */
+export const rejectTrainerApplication = async (applicationId) => {
+  await new Promise(r => setTimeout(r, 150))
+  const raw = localStorage.getItem(TRAINER_APPS_KEY)
+  const arr = raw ? JSON.parse(raw) : []
+  const idx = arr.findIndex(a => String(a.id) === String(applicationId))
+  if (idx === -1) throw new Error('Application not found')
+  arr[idx].status = 'REJECTED'
+  arr[idx].rejectedAt = new Date().toISOString()
+  localStorage.setItem(TRAINER_APPS_KEY, JSON.stringify(arr))
+  logActivity(`Application rejected: ${arr[idx].email}`)
+  return { data: arr[idx] }
+}
+
+
 
 export default api

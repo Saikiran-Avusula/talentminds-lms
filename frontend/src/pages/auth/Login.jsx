@@ -7,7 +7,7 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
-  const [role, setRole] = useState('LEARNER') // 'LEARNER' | 'TRAINER' | 'ADMIN'
+  const [role, setRole] = useState('LEARNER') // LEARNER | TRAINER | ADMIN
 
   const { user, loading: authLoading, login, signInWithGoogle } = useAuth()
   const navigate = useNavigate()
@@ -17,7 +17,6 @@ export default function Login() {
   useEffect(() => {
     if (authLoading) return
     if (user) {
-      // redirect based on role
       const dest = user.role === 'ADMIN' ? '/admin' : (user.role === 'TRAINER' ? '/trainer' : '/dashboard')
       navigate(location.state?.returnTo || dest, { replace: true })
     }
@@ -30,7 +29,6 @@ export default function Login() {
     localStorage.setItem('tm_user', JSON.stringify(curr))
   }
 
-  // Admin local credentials
   const handleAdminLogin = async (e) => {
     e?.preventDefault()
     setError(null)
@@ -48,7 +46,6 @@ export default function Login() {
     }
   }
 
-  // Learner demo
   const handleLearnerDemo = async (e) => {
     e?.preventDefault()
     setError(null)
@@ -64,7 +61,6 @@ export default function Login() {
     }
   }
 
-  // Trainer demo
   const handleTrainerDemo = async (e) => {
     e?.preventDefault()
     setError(null)
@@ -80,7 +76,6 @@ export default function Login() {
     }
   }
 
-  // Google sign-in (allowed for learner & trainer)
   const handleGoogle = async () => {
     if (role === 'ADMIN') {
       setError('Google SSO not allowed for Admin. Use local admin credentials')
@@ -120,20 +115,20 @@ export default function Login() {
         <form onSubmit={handleAdminLogin} className="space-y-4">
           <div>
             <label className="block text-sm text-gray-700">Admin username</label>
-            <input value={email} onChange={e => setEmail(e.target.value)} required className="w-full border rounded px-3 py-2 mt-1" placeholder="admin" />
+            <input value={email} onChange={e=>setEmail(e.target.value)} required className="w-full border rounded px-3 py-2 mt-1" placeholder="admin" />
           </div>
 
           <div>
             <label className="block text-sm text-gray-700">Password</label>
-            <input value={password} onChange={e => setPassword(e.target.value)} required type="password" className="w-full border rounded px-3 py-2 mt-1" placeholder="admin" />
+            <input value={password} onChange={e=>setPassword(e.target.value)} required type="password" className="w-full border rounded px-3 py-2 mt-1" placeholder="admin" />
           </div>
 
           <div className="text-sm text-gray-500">For dev: username/password = <strong>admin/admin</strong>. Google SSO disabled for Admin.</div>
 
           {error && <div className="text-red-600 text-sm">{error}</div>}
 
-          <div className="flex items-center justify-between">
-            <button type="submit" className="bg-indigo-600 text-white px-4 py-2 rounded">Sign in as Admin</button>
+          <div className="flex flex-col sm:flex-row items-center gap-3">
+            <button type="submit" className="w-full sm:w-auto bg-indigo-600 text-white px-4 py-2 rounded">Sign in as Admin</button>
             <button type="button" onClick={() => { setEmail('admin'); setPassword('admin') }} className="text-sm text-gray-500">Autofill</button>
           </div>
         </form>
@@ -159,8 +154,8 @@ export default function Login() {
 
             {error && <div className="text-red-600 text-sm">{error}</div>}
 
-            <div className="flex items-center justify-between">
-              <button className="bg-indigo-600 text-white px-4 py-2 rounded">Sign in as {role === 'LEARNER' ? 'Learner' : 'Trainer'}</button>
+            <div className="flex flex-col sm:flex-row items-center gap-3">
+              <button className="w-full sm:w-auto bg-indigo-600 text-white px-4 py-2 rounded">Sign in as {role === 'LEARNER' ? 'Learner' : 'Trainer'}</button>
               <button type="button" onClick={() => { setEmail(`${role.toLowerCase()}@example.com`); setPassword('demo') }} className="text-sm text-gray-500">Autofill demo</button>
             </div>
           </form>

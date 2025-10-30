@@ -14,6 +14,7 @@ import CourseEditor from './pages/trainer/CourseEditor'
 import TrainerApply from './pages/trainer/TrainerApply'
 import Explore from './pages/Explore'
 import TrainerProfile from './pages/trainer/TrainerProfile'
+import Profile from './pages/Profile'
 
 
 import AdminDashboard from './pages/admin/AdminDashBoard'
@@ -40,6 +41,7 @@ export default function App() {
           <Route path="/trainer/edit/:id" element={<CourseEditor/>} />
           <Route path="/explore" element={<MainLayout><Explore/></MainLayout>} />
           <Route path="/trainer/profile" element={<TrainerProfile/>} />
+          <Route path="/profile" element={<Profile/>} />
         </Routes>
       </ToastProvider>
     </AuthProvider>
