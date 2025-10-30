@@ -1,57 +1,160 @@
+// // src/pages/auth/Login.jsx
+// import React, { useState } from 'react'
+// import { useNavigate } from 'react-router-dom'
+// import { useAuth } from '../../context/AuthContext'
+
+// export default function Login() {
+//   const [email, setEmail] = useState('')
+//   const [password, setPassword] = useState('')
+//   const [error, setError] = useState(null)
+//   const { login } = useAuth()
+//   const navigate = useNavigate()
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault()
+//     setError(null)
+
+//     // In a real app: call POST /api/auth/login -> { token, user }
+//     // For demo: accept any credentials and generate a fake token
+//     try {
+//       const fakeToken = 'demo-token-' + Math.random().toString(36).slice(2)
+//       const user = { id: 1, name: 'Demo User', email }
+//       await login({ token: fakeToken, user })
+//       navigate('/dashboard')
+//     } catch (err) {
+//       // use the error message if available (helps debugging)
+//       setError(err?.message || 'Login failed')
+//     }
+//   }
+
+//   return (
+//     <div className="max-w-md mx-auto bg-white p-6 rounded shadow">
+//       <h2 className="text-xl font-semibold mb-4">Sign in</h2>
+
+//       <form onSubmit={handleSubmit} className="space-y-4">
+//         <div>
+//           <label className="block text-sm text-gray-700">Email</label>
+//           <input value={email} onChange={e => setEmail(e.target.value)} required
+//                  className="w-full border rounded px-3 py-2 mt-1" placeholder="you@example.com" />
+//         </div>
+
+//         <div>
+//           <label className="block text-sm text-gray-700">Password</label>
+//           <input value={password} onChange={e => setPassword(e.target.value)} required
+//                  type="password" className="w-full border rounded px-3 py-2 mt-1" placeholder="password" />
+//         </div>
+
+//         {error && <div className="text-red-600 text-sm">{error}</div>}
+
+//         <div className="flex items-center justify-between">
+//           <button className="bg-indigo-600 text-white px-4 py-2 rounded">Sign in</button>
+//           <button type="button" onClick={() => { setEmail('demo@example.com'); setPassword('demo') }} 
+//                   className="text-sm text-gray-500">Use demo</button>
+//         </div>
+//       </form>
+//     </div>
+//   )
+// }
+
+// src/pages/auth/Login.jsx with firebase auth integration
 // src/pages/auth/Login.jsx
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
-  const { login } = useAuth()
+
+  const { user, loading: authLoading, login, signInWithGoogle } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+  const returnTo = location.state?.returnTo || '/dashboard'
+
+  // If auth is still initializing, wait.
+  // If user is already logged in, redirect immediately.
+  useEffect(() => {
+    if (authLoading) return
+    if (user) {
+      navigate(returnTo, { replace: true })
+    }
+  }, [user, authLoading, navigate, returnTo])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError(null)
 
-    // In a real app: call POST /api/auth/login -> { token, user }
-    // For demo: accept any credentials and generate a fake token
     try {
+      // Demo login
       const fakeToken = 'demo-token-' + Math.random().toString(36).slice(2)
-      const user = { id: 1, name: 'Demo User', email }
-      await login({ token: fakeToken, user })
-      navigate('/dashboard')
+      const userObj = { id: 1, name: 'Demo User', email }
+      await login({ token: fakeToken, user: userObj })
+      navigate(returnTo, { replace: true })
     } catch (err) {
-      // use the error message if available (helps debugging)
       setError(err?.message || 'Login failed')
     }
   }
 
+  const handleGoogle = async () => {
+    setError(null)
+    try {
+      await signInWithGoogle()
+      // onAuthStateChanged will populate user; navigate to returnTo
+      navigate(returnTo, { replace: true })
+    } catch (err) {
+      console.error(err)
+      setError(err?.message || 'Google sign-in failed')
+    }
+  }
+
+  // Show a neutral loading state while auth finishes initializing
+  if (authLoading) {
+    return (
+      <div className="max-w-md mx-auto bg-white p-6 rounded shadow text-center">
+        <div className="text-gray-600">Checking authentication status…</div>
+      </div>
+    )
+  }
+
+  // If user exists, we already navigated in the effect — render nothing
+  if (user) return null
+
+  // Not authenticated — show login UI
   return (
     <div className="max-w-md mx-auto bg-white p-6 rounded shadow">
       <h2 className="text-xl font-semibold mb-4">Sign in</h2>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm text-gray-700">Email</label>
-          <input value={email} onChange={e => setEmail(e.target.value)} required
-                 className="w-full border rounded px-3 py-2 mt-1" placeholder="you@example.com" />
-        </div>
+      <div className="space-y-3">
+        <button onClick={handleGoogle} className="w-full bg-white border rounded px-3 py-2 flex items-center gap-3 hover:shadow-sm">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5" />
+          <span className="text-sm">Sign in with Google</span>
+        </button>
 
-        <div>
-          <label className="block text-sm text-gray-700">Password</label>
-          <input value={password} onChange={e => setPassword(e.target.value)} required
-                 type="password" className="w-full border rounded px-3 py-2 mt-1" placeholder="password" />
-        </div>
+        <div className="text-center text-sm text-gray-400">or</div>
 
-        {error && <div className="text-red-600 text-sm">{error}</div>}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm text-gray-700">Email</label>
+            <input value={email} onChange={e => setEmail(e.target.value)} required
+                   className="w-full border rounded px-3 py-2 mt-1" placeholder="you@example.com" />
+          </div>
 
-        <div className="flex items-center justify-between">
-          <button className="bg-indigo-600 text-white px-4 py-2 rounded">Sign in</button>
-          <button type="button" onClick={() => { setEmail('demo@example.com'); setPassword('demo') }} 
-                  className="text-sm text-gray-500">Use demo</button>
-        </div>
-      </form>
+          <div>
+            <label className="block text-sm text-gray-700">Password</label>
+            <input value={password} onChange={e => setPassword(e.target.value)} required
+                   type="password" className="w-full border rounded px-3 py-2 mt-1" placeholder="password" />
+          </div>
+
+          {error && <div className="text-red-600 text-sm">{error}</div>}
+
+          <div className="flex items-center justify-between">
+            <button className="bg-indigo-600 text-white px-4 py-2 rounded">Sign in</button>
+            <button type="button" onClick={() => { setEmail('demo@example.com'); setPassword('demo') }} 
+                    className="text-sm text-gray-500">Use demo</button>
+          </div>
+        </form>
+      </div>
     </div>
   )
 }

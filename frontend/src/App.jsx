@@ -9,6 +9,9 @@ import MainLayout from './component/layout/MainLayout'
 import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './component/route/ProtectedRoute'
 import { ToastProvider } from './component/ui/ToastProvider'
+import TrainerDashboard from './pages/trainer/TrainerDashboard'
+import CourseEditor from './pages/trainer/CourseEditor'
+
 
 export default function App() {
   return (
@@ -25,6 +28,21 @@ export default function App() {
             </ProtectedRoute>
           } />
           <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="/trainer" element={
+              <ProtectedRoute>
+                <MainLayout><TrainerDashboard/></MainLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/trainer/new" element={
+              <ProtectedRoute>
+                <MainLayout><CourseEditor/></MainLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/trainer/edit/:id" element={
+              <ProtectedRoute>
+                <MainLayout><CourseEditor/></MainLayout>
+              </ProtectedRoute>
+            } />
         </Routes>
       </ToastProvider>
     </AuthProvider>

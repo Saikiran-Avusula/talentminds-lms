@@ -4,7 +4,7 @@ import { getMyEnrollments } from '../services/api'
 import { Link } from 'react-router-dom'
 
 export default function Dashboard() {
-  const { user, logout } = useAuth()
+  const { user } = useAuth()
   const [enrollments, setEnrollments] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -23,10 +23,10 @@ export default function Dashboard() {
   return (
     <div className="max-w-5xl mx-auto bg-white p-6 rounded shadow">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold">Dashboard</h2>
+        {/* <h2 className="text-2xl font-semibold">Dashboard</h2> */}
         <div className="flex items-center gap-4">
-          <div className="text-sm text-gray-600">Hi, <span className="font-medium">{user?.name || 'User'}</span></div>
-          <button onClick={logout} className="text-sm text-red-600">Sign out</button>
+          <div className="text-2xl font-semibold">Hi, <span className="font-medium">{user?.name || 'User'}</span></div>
+          {/* <button onClick={logout} className="text-sm text-red-600">Sign out</button> */}
         </div>
       </div>
 
@@ -51,8 +51,8 @@ export default function Dashboard() {
                     <div className="mt-2">
                       <div className="text-sm text-gray-600">Progress: {e.progressPercent ?? 0}%</div>
                       <div className="mt-3">
-                        <Link to={`/course/${e.courseId}`} className="text-indigo-600 text-sm">Open course</Link>
-                        <span className="ml-3 text-indigo-600 text-sm"><Link to={`/course/${e.courseId}/player`}>Player</Link></span>
+                        <Link to={`/course/${e.courseId}`} className="text-indigo-600 text-sm border border-indigo-600 rounded px-2 py-1 hover:bg-indigo-600 hover:text-white">Open course</Link>
+                        <span className="ml-3 text-indigo-600 text-sm border border-indigo-600 rounded px-2 py-1 hover:bg-indigo-600 hover:text-white"><Link to={`/course/${e.courseId}/player`}>Player</Link></span>
                       </div>
                     </div>
                   </div>

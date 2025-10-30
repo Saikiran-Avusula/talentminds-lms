@@ -107,4 +107,46 @@ export const updateProgress = async (courseId, lessonIdentifier) => {
   return { data: enrollment }
 }
 
+// Trainer course drafts (localStorage-backed) --------------------------------
+const TRAINER_COURSES_KEY = 'tm_trainer_courses'
+
+/**
+ * Create or update a course draft for trainer.
+ * If courseData.id exists => update; otherwise create new id.
+ * courseData should include: title, shortDescription, description, price, modules: [{id,title,description,contentUrl}]
+ */
+export const createCourseDraft = async (trainerId, courseData) => {
+  await new Promise(r => setTimeout(r, 150))
+  const raw = localStorage.getItem(TRAINER_COURSES_KEY)
+  const arr = raw ? JSON.parse(raw) : []
+  if (courseData.id) {
+    const idx = arr.findIndex(c => String(c.id) === String(courseData.id) && String(c.trainerId) === String(trainerId))
+    if (idx === -1) throw new Error('Course not found or not permitted')
+    arr[idx] = { ...arr[idx], ...courseData, trainerId }
+  } else {
+    const newCourse = {
+      ...courseData,
+      id: Date.now(),
+      trainerId,
+      createdAt: new Date().toISOString(),
+      published: false
+    }
+    arr.push(newCourse)
+  }
+  localStorage.setItem(TRAINER_COURSES_KEY, JSON.stringify(arr))
+  return { data: courseData.id ? courseData : arr[arr.length - 1] }
+}
+
+/**
+ * Get courses created by trainer (local)
+ */
+export const getTrainerCourses = async (trainerId) => {
+  await new Promise(r => setTimeout(r, 120))
+  const raw = localStorage.getItem(TRAINER_COURSES_KEY)
+  const arr = raw ? JSON.parse(raw) : []
+  const list = arr.filter(c => String(c.trainerId) === String(trainerId))
+  return { data: list }
+}
+
+
 export default api
