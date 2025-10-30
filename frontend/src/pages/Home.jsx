@@ -1,31 +1,51 @@
-import React from 'react'
-
-import courses from '../mock-data/courses.json'
+import React, { useEffect, useState } from 'react'
+// import CourseList from '../component/domain/CourseList'
 import CourseList from '../component/domin/CourseList'
+import { fetchCourses } from '../services/api'
 
-export default function Home(){
+export default function Home() {
+  const [courses, setCourses] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let mounted = true
+    fetchCourses().then(res => {
+      if (mounted) setCourses(res.data || [])
+    }).finally(() => { if (mounted) setLoading(false) })
+    return () => { mounted = false }
+  }, [])
+
   return (
     <div>
-      <section className="mb-8">
-        <div className="bg-indigo-600 text-white rounded-lg p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold">Learn new skills online</h1>
-            <p className="mt-2 text-indigo-100 max-w-xl">Build your career with industry-aligned courses. Start small — prove big.</p>
-          </div>
-          <div>
-            <button className="bg-white text-indigo-600 px-4 py-2 rounded shadow">Explore Courses</button>
-          </div>
+      <section id="courses" className="mb-8">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-2xl font-semibold">Featured courses</h2>
+          <div className="text-sm text-gray-500">{loading ? 'Loading...' : `${courses.length} courses`}</div>
+        </div>
+
+        <div>
+          <CourseList courses={courses} />
         </div>
       </section>
 
-      <section>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold">Featured Courses</h2>
-          <div className="text-sm text-gray-500">Showing {courses.length} courses</div>
-        </div>
+      <section className="mt-12 bg-white p-6 rounded shadow">
+        <h3 className="text-xl font-semibold mb-3">Why TalentMinds?</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <div className="font-semibold">Project-first curriculum</div>
+            <div className="text-sm text-gray-600">Build real apps to show in interviews.</div>
+          </div>
 
-        {/* <CourseList courses={courses} /> */}
-        <CourseList courses={courses} />
+          <div>
+            <div className="font-semibold">Balanced frontend & backend</div>
+            <div className="text-sm text-gray-600">Java + Spring Boot for backend; React + Vite + Tailwind for frontend.</div>
+          </div>
+
+          <div>
+            <div className="font-semibold">Deploy-ready</div>
+            <div className="text-sm text-gray-600">Prepare for hosting on Render / GCP / AWS and CI pipelines.</div>
+          </div>
+        </div>
       </section>
     </div>
   )

@@ -11,7 +11,12 @@ import ProtectedRoute from './component/route/ProtectedRoute'
 import { ToastProvider } from './component/ui/ToastProvider'
 import TrainerDashboard from './pages/trainer/TrainerDashboard'
 import CourseEditor from './pages/trainer/CourseEditor'
+import TrainerApply from './pages/trainer/TrainerApply'
+import Explore from './pages/Explore'
+import TrainerProfile from './pages/trainer/TrainerProfile'
 
+
+import AdminDashboard from './pages/admin/AdminDashBoard'
 
 export default function App() {
   return (
@@ -27,22 +32,14 @@ export default function App() {
               <MainLayout><Dashboard/></MainLayout>
             </ProtectedRoute>
           } />
+          <Route path="/admin" element={<AdminDashboard />} />
           <Route path="*" element={<Navigate to="/" replace />} />
-          <Route path="/trainer" element={
-              <ProtectedRoute>
-                <MainLayout><TrainerDashboard/></MainLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/trainer/new" element={
-              <ProtectedRoute>
-                <MainLayout><CourseEditor/></MainLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/trainer/edit/:id" element={
-              <ProtectedRoute>
-                <MainLayout><CourseEditor/></MainLayout>
-              </ProtectedRoute>
-            } />
+          <Route path="/trainer/apply" element={<MainLayout><TrainerApply/></MainLayout>} />
+          <Route path="/trainer" element={<TrainerDashboard/>} />               // TrainerDashboard uses RoleProtectedRoute internally
+          <Route path="/trainer/new" element={<CourseEditor/>} />
+          <Route path="/trainer/edit/:id" element={<CourseEditor/>} />
+          <Route path="/explore" element={<MainLayout><Explore/></MainLayout>} />
+          <Route path="/trainer/profile" element={<TrainerProfile/>} />
         </Routes>
       </ToastProvider>
     </AuthProvider>
