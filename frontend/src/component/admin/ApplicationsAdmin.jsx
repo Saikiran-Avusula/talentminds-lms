@@ -1,6 +1,11 @@
 // src/component/admin/ApplicationsAdmin.jsx
 import React, { useEffect, useState } from 'react'
-import { getTrainerApplications, approveTrainerApplication, rejectTrainerApplication } from '../../services/api'
+import {
+  getTrainerApplications,
+  approveTrainerApplication,
+  rejectTrainerApplication,
+  deleteTrainerApplication
+} from '../../services/api'
 import { useToast } from '../ui/ToastProvider'
 
 export default function ApplicationsAdmin() {
@@ -46,6 +51,18 @@ export default function ApplicationsAdmin() {
     }
   }
 
+  const remove = async (id) => {
+    if (!confirm('Delete this application permanently? This cannot be undone.')) return
+    try {
+      await deleteTrainerApplication(id)
+      toast.showToast('Application deleted', { type: 'info' })
+      await load()
+    } catch (err) {
+      toast.showToast('Delete failed', { type: 'error' })
+      console.log(err);
+    }
+  }
+
   return (
     <div className="bg-white p-4 rounded shadow">
       <div className="flex items-center justify-between mb-3">
@@ -69,10 +86,12 @@ export default function ApplicationsAdmin() {
                 <div className="flex gap-2">
                   {a.status !== 'APPROVED' && <button onClick={() => approve(a.id)} className="bg-green-600 text-white px-3 py-1 rounded text-sm">Approve</button>}
                   {a.status === 'PENDING' && <button onClick={() => decline(a.id)} className="bg-red-100 text-red-700 px-3 py-1 rounded text-sm border border-red-200">Decline</button>}
+                  <button onClick={() => remove(a.id)} className="bg-gray-100 text-gray-700 px-3 py-1 rounded text-sm border">Delete</button>
                 </div>
               </div>
             </div>
           ))}
+          {apps.length === 0 && <div className="text-gray-600">No trainer applications found.</div>}
         </div>
       )}
     </div>

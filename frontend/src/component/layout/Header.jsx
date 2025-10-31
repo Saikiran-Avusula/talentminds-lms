@@ -65,12 +65,11 @@ export default function Header() {
       return [
         { to: '/trainer', label: 'Trainer Dashboard' },
         { to: '/trainer/new', label: 'Create Course' },
-        { to: '/trainer/profile', label: 'Profile' }
+        { to: '/trainer/profile', label: 'Profile' } // trainer profile in main nav, not in avatar dropdown
       ]
     }
     return [
       { to: '/explore', label: 'Explore' },
-      { to: '/', label: 'Home' },
       { to: '/trainer/apply', label: 'Apply as Trainer' }
     ]
   }
@@ -78,7 +77,7 @@ export default function Header() {
   const roleLinks = getRoleLinks()
 
   return (
-    <header className="bg-white border-b">
+    <header className="bg-white sticky top-0 z-30">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Link to="/" className="text-2xl font-bold text-indigo-600">TalentMinds</Link>
@@ -86,17 +85,16 @@ export default function Header() {
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-6">
             {roleLinks.map(l => (
-              <Link key={l.to} to={l.to} className="text-base text-gray-700 hover:text-indigo-600">{l.label}</Link>
+              <Link key={l.to} to={l.to} className="text-base text-gray-700 hover:text-indigo-600 font-bold border border-indigo-600 rounded px-4 py-2 hover:bg-indigo-600 hover:text-white">{l.label}</Link>
             ))}
           </nav>
         </div>
 
         <div className="flex items-center gap-4">
-          {!user && <div className="hidden md:block"><Link to="/auth/login" className="text-base text-gray-700 hover:text-indigo-600">Sign in</Link></div>}
+          {!user && <div className="hidden md:block"><Link to="/auth/login" className="text-base text-gray-700 hover:text-indigo-600 font-bold border border-indigo-600 rounded px-4 py-2 hover:bg-indigo-600 hover:text-white">Sign in</Link></div>}
 
           {user && (
             <div className="hidden md:flex items-center gap-3" ref={menuRef}>
-              {/* Only learners have dashboard link in dropdown */}
               <div className="relative">
                 <button onClick={() => setOpen(s => !s)} className="flex items-center gap-2 rounded px-2 py-1 hover:bg-gray-100 focus:outline-none">
                   <div className="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center text-sm font-medium">
@@ -109,11 +107,12 @@ export default function Header() {
                 </button>
 
                 {open && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg z-50">
+                  <div className="absolute right-0 mt-2 w-44 bg-white border rounded shadow-lg z-50">
                     <div className="py-1">
-                      {/* Only show Dashboard for learners */}
+                      {/* Only show Dashboard for learners in avatar dropdown */}
                       {user.role === 'LEARNER' && <Link to="/dashboard" onClick={() => setOpen(false)} className="block px-4 py-2 text-base text-gray-700 hover:bg-gray-50">Dashboard</Link>}
-                      <Link to="/profile" onClick={() => setOpen(false)} className="block px-4 py-2 text-base text-gray-700 hover:bg-gray-50">Profile</Link>
+                      {/* Profile link removed for Admin and Trainer in avatar dropdown */}
+                      {user.role === 'LEARNER' && <Link to="/profile" onClick={() => setOpen(false)} className="block px-4 py-2 text-base text-gray-700 hover:bg-gray-50">Profile</Link>}
                       <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-base text-red-600 hover:bg-gray-50">Logout</button>
                     </div>
                   </div>
@@ -122,7 +121,6 @@ export default function Header() {
             </div>
           )}
 
-          {/* Mobile hamburger */}
           <div className="md:hidden">
             <button
               id="tm-hamburger"
@@ -149,10 +147,8 @@ export default function Header() {
         className={`md:hidden fixed inset-0 z-40 transform ${mobileOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-200 ease-in-out`}
         aria-hidden={!mobileOpen}
       >
-        {/* overlay */}
         <div className="absolute inset-0 bg-black/40" onClick={() => setMobileOpen(false)} />
 
-        {/* slide panel from left */}
         <div className="absolute left-0 top-0 h-full w-80 bg-white shadow-lg p-4 overflow-auto">
           <div className="flex items-center justify-between mb-4">
             <Link to="/" onClick={() => setMobileOpen(false)} className="text-lg font-bold text-indigo-600">TalentMinds</Link>
@@ -186,11 +182,12 @@ export default function Header() {
 
             <Link to="/explore" onClick={() => setMobileOpen(false)} className="block px-3 py-2 rounded hover:bg-gray-50 text-base text-gray-700">Explore</Link>
 
-            {/* conditional dashboard/profile/logout */}
             {user && (
               <>
+                {/* only learners have dashboard in mobile menu */}
                 {user.role === 'LEARNER' && <Link to="/dashboard" onClick={() => setMobileOpen(false)} className="block px-3 py-2 rounded hover:bg-gray-50 text-base text-gray-700">Dashboard</Link>}
-                <Link to="/profile" onClick={() => setMobileOpen(false)} className="block px-3 py-2 rounded hover:bg-gray-50 text-base text-gray-700">Profile</Link>
+                {/* Profile is available to Learners via /profile; Trainers access profile via main nav */}
+                {user.role === 'LEARNER' && <Link to="/profile" onClick={() => setMobileOpen(false)} className="block px-3 py-2 rounded hover:bg-gray-50 text-base text-gray-700">Profile</Link>}
                 <button onClick={() => { handleLogout(); setMobileOpen(false) }} className="w-full text-left px-3 py-2 rounded hover:bg-gray-50 text-red-600">Logout</button>
               </>
             )}

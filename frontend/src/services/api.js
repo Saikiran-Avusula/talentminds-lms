@@ -429,5 +429,21 @@ export const rejectTrainerApplication = async (applicationId) => {
 }
 
 
+/**
+ * Delete a trainer application (completely remove)
+ */
+export const deleteTrainerApplication = async (applicationId) => {
+  await new Promise(r => setTimeout(r, 150))
+  const raw = localStorage.getItem(TRAINER_APPS_KEY)
+  const arr = raw ? JSON.parse(raw) : []
+  const idx = arr.findIndex(a => String(a.id) === String(applicationId))
+  if (idx === -1) throw new Error('Application not found')
+  const removed = arr.splice(idx, 1)[0]
+  localStorage.setItem(TRAINER_APPS_KEY, JSON.stringify(arr))
+  logActivity(`Application deleted: ${removed.email}`)
+  return { data: removed }
+}
+
+
 
 export default api
