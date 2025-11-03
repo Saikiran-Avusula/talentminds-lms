@@ -98,7 +98,7 @@ export default function Header() {
               <div className="relative">
                 <button onClick={() => setOpen(s => !s)} className="flex items-center gap-2 rounded px-2 py-1 hover:bg-gray-100 focus:outline-none">
                   <div className="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center text-sm font-medium">
-                    {(user.name || 'U').split(' ').map(n => n[0]).slice(0,2).join('').toUpperCase()}
+                    {(user.name || 'U').split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase()}
                   </div>
                   <span className="hidden sm:inline text-base text-gray-700">{user.name}</span>
                   <svg className={`w-4 h-4 text-gray-500 transition-transform ${open ? 'rotate-180' : ''}`} viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -130,11 +130,7 @@ export default function Header() {
               className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:bg-gray-100 focus:outline-none"
             >
               <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                {mobileOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-                )}
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
           </div>
@@ -160,17 +156,13 @@ export default function Header() {
           </div>
 
           <div className="mb-4">
-            {user ? (
+            {user && (
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center">{(user.name||'U').split(' ').map(n=>n[0]).slice(0,2).join('').toUpperCase()}</div>
+                <div className="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center">{(user.name || 'U').split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase()}</div>
                 <div>
                   <div className="font-medium">{user.name}</div>
                   <div className="text-xs text-gray-500">{user.email}</div>
                 </div>
-              </div>
-            ) : (
-              <div className="mb-2">
-                <Link to="/auth/login" onClick={() => setMobileOpen(false)} className="block text-base text-indigo-600">Sign in</Link>
               </div>
             )}
           </div>

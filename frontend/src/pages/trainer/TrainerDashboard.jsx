@@ -37,9 +37,9 @@ export default function TrainerDashboard() {
     <RoleProtectedRoute requiredRole="TRAINER">
       <MainLayout>
         <div className="max-w-5xl mx-auto p-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <h2 className="text-2xl font-semibold">Trainer Dashboard</h2>
-            <div>
+            <div className="w-full sm:w-auto">
               <button onClick={() => navigate('/trainer/new')} className="bg-indigo-600 text-white px-3 py-1 rounded">Create Course</button>
             </div>
           </div>

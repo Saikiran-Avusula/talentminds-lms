@@ -101,10 +101,10 @@ export default function Login() {
   if (user) return null
 
   return (
-    <div className="max-w-md mx-auto bg-white p-6 rounded shadow">
-      <div className="mb-4 flex items-center justify-between">
+    <div className="max-w-md mx-auto bg-white p-6 rounded shadow px-4 sm:px-6">
+      <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <h2 className="text-xl font-semibold">Sign in</h2>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <button onClick={() => setRole('LEARNER')} className={`px-3 py-1 rounded ${role === 'LEARNER' ? 'bg-indigo-600 text-white' : 'bg-white border'}`}>Learner</button>
           <button onClick={() => setRole('TRAINER')} className={`px-3 py-1 rounded ${role === 'TRAINER' ? 'bg-indigo-600 text-white' : 'bg-white border'}`}>Trainer</button>
           <button onClick={() => setRole('ADMIN')} className={`px-3 py-1 rounded ${role === 'ADMIN' ? 'bg-indigo-600 text-white' : 'bg-white border'}`}>Admin</button>
@@ -115,12 +115,12 @@ export default function Login() {
         <form onSubmit={handleAdminLogin} className="space-y-4">
           <div>
             <label className="block text-sm text-gray-700">Admin username</label>
-            <input value={email} onChange={e=>setEmail(e.target.value)} required className="w-full border rounded px-3 py-2 mt-1" placeholder="admin" />
+            <input value={email} onChange={e => setEmail(e.target.value)} required className="w-full border rounded px-3 py-2 mt-1" placeholder="admin" />
           </div>
 
           <div>
             <label className="block text-sm text-gray-700">Password</label>
-            <input value={password} onChange={e=>setPassword(e.target.value)} required type="password" className="w-full border rounded px-3 py-2 mt-1" placeholder="admin" />
+            <input value={password} onChange={e => setPassword(e.target.value)} required type="password" className="w-full border rounded px-3 py-2 mt-1" placeholder="admin" />
           </div>
 
           <div className="text-sm text-gray-500">For dev: username/password = <strong>admin/admin</strong>. Google SSO disabled for Admin.</div>

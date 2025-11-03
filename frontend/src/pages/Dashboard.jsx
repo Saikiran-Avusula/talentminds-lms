@@ -22,7 +22,7 @@ export default function Dashboard() {
 
   return (
     <div className="max-w-5xl mx-auto bg-white p-6 rounded shadow">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         {/* <h2 className="text-2xl font-semibold">Dashboard</h2> */}
         <div className="flex items-center gap-4">
           <div className="text-2xl font-semibold">Hi, <span className="font-medium">{user?.name || 'User'}</span></div>

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { createCourseDraft, getTrainerCourses } from '../../services/api'
-import ModuleEditor  from '../../component/domin/ModuleEditor'
+import ModuleEditor from '../../component/domin/ModuleEditor'
 import { useToast } from '../../component/ui/ToastProvider'
 import RoleProtectedRoute from '../../component/route/RoleProtectedRoute'
 import MainLayout from '../../component/layout/MainLayout'
@@ -43,7 +43,7 @@ export default function CourseEditor() {
 
   const handleChange = (field, val) => setCourse(prev => ({ ...prev, [field]: val }))
 
-  const addModule = () => setCourse(prev => ({ ...prev, modules: [...(prev.modules || []), { id: Date.now(), title:'', description:'', contentUrl:'' }] }))
+  const addModule = () => setCourse(prev => ({ ...prev, modules: [...(prev.modules || []), { id: Date.now(), title: '', description: '', contentUrl: '' }] }))
 
   const updateModule = (moduleId, patch) => setCourse(prev => ({ ...prev, modules: prev.modules.map(m => m.id === moduleId ? { ...m, ...patch } : m) }))
 
@@ -69,9 +69,9 @@ export default function CourseEditor() {
     <RoleProtectedRoute requiredRole="TRAINER">
       <MainLayout>
         <div className="max-w-4xl mx-auto bg-white p-6 rounded shadow">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <h2 className="text-2xl font-semibold">{id ? 'Edit Course' : 'Create Course'}</h2>
-            <div className="flex gap-2">
+            <div className="flex gap-2 w-full sm:w-auto">
               <button onClick={handleSave} disabled={loading} className="bg-indigo-600 text-white px-3 py-1 rounded">{loading ? 'Saving...' : 'Save'}</button>
               <button onClick={() => navigate('/trainer')} className="text-sm text-gray-600">Cancel</button>
             </div>

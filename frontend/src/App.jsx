@@ -17,22 +17,22 @@ import TrainerProfile from './pages/trainer/TrainerProfile'
 import Profile from './pages/Profile'
 
 
-import AdminDashboard from './pages/admin/AdminDashBoard'
+import AdminDashboard from './pages/admin/AdminDashboard'
 
 export default function App() {
   return (
     <AuthProvider>
       <ToastProvider>
         <Routes>
-          <Route path="/" element={<MainLayout><Home/></MainLayout>} />
-          <Route path="/course/:id" element={<MainLayout><CourseDetail/></MainLayout>} />
-          <Route path="/course/:id/player" element={<MainLayout><CoursePlayer/></MainLayout>} />
-          <Route path="/auth/login" element={<MainLayout><Login/></MainLayout>} />
+          <Route path="/" element={<MainLayout><Home /></MainLayout>} />
+          <Route path="/course/:id" element={<MainLayout><CourseDetail /></MainLayout>} />
+          <Route path="/course/:id/player" element={<MainLayout><CoursePlayer /></MainLayout>} />
+          <Route path="/auth/login" element={<MainLayout><Login /></MainLayout>} />
 
           {/* User routes */}
           <Route path="/dashboard" element={
             <ProtectedRoute>
-              <MainLayout><Dashboard/></MainLayout>
+              <MainLayout><Dashboard /></MainLayout>
             </ProtectedRoute>
           } />
 
@@ -41,15 +41,15 @@ export default function App() {
 
           {/* Trainer routes */}
           <Route path="*" element={<Navigate to="/" replace />} />
-          <Route path="/trainer/apply" element={<MainLayout><TrainerApply/></MainLayout>} />
-          <Route path="/trainer" element={<TrainerDashboard/>} />               // TrainerDashboard uses RoleProtectedRoute internally here
-          <Route path="/trainer/new" element={<CourseEditor/>} />
-          <Route path="/trainer/edit/:id" element={<CourseEditor/>} />
+          <Route path="/trainer/apply" element={<MainLayout><TrainerApply /></MainLayout>} />
+          <Route path="/trainer" element={<TrainerDashboard />} />
+          <Route path="/trainer/new" element={<CourseEditor />} />
+          <Route path="/trainer/edit/:id" element={<CourseEditor />} />
 
           {/* Explore routes */}
-          <Route path="/explore" element={<MainLayout><Explore/></MainLayout>} />
-          <Route path="/trainer/profile" element={<TrainerProfile/>} />
-          <Route path="/profile" element={<Profile/>} />
+          <Route path="/explore" element={<MainLayout><Explore /></MainLayout>} />
+          <Route path="/trainer/profile" element={<TrainerProfile />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </ToastProvider>
     </AuthProvider>
