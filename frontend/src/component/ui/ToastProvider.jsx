@@ -30,10 +30,10 @@ export function ToastProvider({ children }) {
   return (
     <ToastContext.Provider value={{ showToast, removeToast }}>
       {children}
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
-        <div className="space-y-3 w-full max-w-sm pointer-events-auto">
+      <div className="fixed top-6 right-4 z-50 p-2 pointer-events-none">
+        <div className="space-y-3 w-80 max-w-full pointer-events-auto">
           {toasts.map(t => (
-            <div key={t.id} className={`w-full border ${typeClasses[t.type] || typeClasses.info} rounded shadow p-3 flex items-start gap-3 mx-auto`}>
+            <div key={t.id} className={`w-full border ${typeClasses[t.type] || typeClasses.info} rounded shadow p-3 flex items-start gap-3 mx-auto transition-all duration-200 animate-toast-in hover:shadow-md`}>
               <div className="flex-shrink-0">
                 {t.type === 'success' && <div className="w-6 h-6 rounded-full bg-green-200 flex items-center justify-center text-green-700">✓</div>}
                 {t.type === 'error' && <div className="w-6 h-6 rounded-full bg-red-200 flex items-center justify-center text-red-700">✕</div>}
