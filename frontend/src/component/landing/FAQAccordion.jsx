@@ -10,7 +10,7 @@ function Chevron({ open }) {
 }
 
 export default function FAQAccordion({ faqs = [] }) {
-  const [openIdx, setOpenIdx] = useState(0)
+  const [openId, setOpenId] = useState(null)
   const [query, setQuery] = useState('')
 
   const filtered = useMemo(() => {
@@ -19,7 +19,7 @@ export default function FAQAccordion({ faqs = [] }) {
     return faqs.filter(f => (f.q || '').toLowerCase().includes(q) || (f.a || '').toLowerCase().includes(q))
   }, [faqs, query])
 
-  const toggle = (idx) => setOpenIdx(prev => prev === idx ? -1 : idx)
+  const toggle = (id) => setOpenId(prev => prev === id ? null : id)
 
   return (
     <section className="py-12 bg-gradient-to-b from-white to-indigo-50/50">
@@ -45,14 +45,14 @@ export default function FAQAccordion({ faqs = [] }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl">
-          {filtered.map((f, i) => {
-            const idx = i
-            const open = openIdx === idx
+        <div className="grid grid-cols-1 gap-6 max-w-2xl mx-auto">
+          {filtered.map((f) => {
+            const id = f.q || String(Math.random())
+            const open = openId === id
             return (
-              <div key={i} className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+              <div key={id} className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
                 <button
-                  onClick={() => toggle(idx)}
+                  onClick={() => toggle(id)}
                   className="w-full flex items-center justify-between gap-3 text-left px-5 py-4 hover:bg-gray-50"
                   aria-expanded={open ? 'true' : 'false'}
                 >

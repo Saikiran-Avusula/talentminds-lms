@@ -85,13 +85,13 @@ export default function Header() {
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-6">
             {roleLinks.map(l => (
-              <Link key={l.to} to={l.to} className="text-base text-gray-700 hover:text-indigo-600 font-bold border border-indigo-600 rounded px-4 py-2 hover:bg-indigo-600 hover:text-white">{l.label}</Link>
+              <Link key={l.to} to={l.to} className="text-base text-gray-700 hover:text-indigo-600 font-bold border border-indigo-600 rounded px-4 py-2 hover:bg-indigo-600 hover:text-white transition-colors duration-150">{l.label}</Link>
             ))}
           </nav>
         </div>
 
         <div className="flex items-center gap-4">
-          {!user && <div className="hidden md:block"><Link to="/auth/login" className="text-base text-gray-700 hover:text-indigo-600 font-bold border border-indigo-600 rounded px-4 py-2 hover:bg-indigo-600 hover:text-white">Sign in</Link></div>}
+          {!user && <div className="hidden md:block"><Link to="/auth/login" className="text-base text-gray-700 hover:text-indigo-600 font-bold border border-indigo-600 rounded px-4 py-2 hover:bg-indigo-600 hover:text-white transition-colors duration-150">Sign in</Link></div>}
 
           {user && (
             <div className="hidden md:flex items-center gap-3" ref={menuRef}>

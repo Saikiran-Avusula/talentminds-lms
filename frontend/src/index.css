@@ -16,3 +16,21 @@
 .animate-fade-in {
     animation: tm-fade-in 500ms ease both;
 }
+
+/* Marquee for logos strip */
+@keyframes tm-marquee {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.animate-marquee {
+    display: inline-flex;
+    min-width: 200%;
+    animation: tm-marquee 18s linear infinite;
+    will-change: transform;
+}
